@@ -1,0 +1,29 @@
+name: Sarif Markdown Report
+description: Convert Qodana SARIF results into a readable Markdown report for CI pipelines.
+author: Buzurgmehr Arjmandi
+
+inputs:
+  sarif-file-path:
+    description: Path to the sarif file
+    required: true
+  output-markdown:
+    description: Optional path where the Markdown report will be written.
+    required: false
+  add-job-summary:
+    description: Append the Markdown report to the GitHub Actions job summary.
+    required: false
+    default: 'true'
+
+outputs:
+  markdown:
+    description: Markdown content generated from the SARIF file.
+  markdown-file:
+    description: Absolute path to the generated Markdown file when output-markdown is provided.
+
+runs:
+  using: node20
+  main: src/index.js
+
+branding:
+  icon: 'file-text'
+  color: 'gray-dark'

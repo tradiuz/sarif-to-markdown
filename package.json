@@ -1,0 +1,16 @@
+{
+  "name": "sarif-markdown-report",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@actions/core": "^1.11.1"
+  }
+}
