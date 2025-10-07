@@ -255,7 +255,7 @@ const generateMarkdownFromSarif = (sarif, options = {}) => {
   const summaryTable = buildSummaryTable(summaryCounts, totalIssues);
   const categorySections = buildCategorySections(categories);
 
-  const lines = ['# Qodana SARIF Report'];
+  const lines = ['# SARIF Report'];
 
   if (options.inputPath) {
     const relativePath = path.relative(process.cwd(), path.resolve(options.inputPath));
