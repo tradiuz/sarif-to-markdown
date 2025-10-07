@@ -268,21 +268,16 @@ const generateMarkdownFromSarif = (sarif, options = {}) => {
 };
 
 const main = () => {
-  const [, , inputPath, outputPath] = process.argv;
+  const [, , inputPath] = process.argv;
   if (!inputPath) {
-    console.error('Usage: node src/generate-report.js <input-sarif> [output-markdown]');
+    console.error('Usage: node src/generate-report.js <input-sarif>');
     process.exit(1);
   }
 
   const sarif = readSarif(inputPath);
   const markdown = generateMarkdownFromSarif(sarif, { inputPath });
 
-  if (outputPath) {
-    fs.writeFileSync(outputPath, markdown, 'utf8');
-    console.log(`Markdown report written to ${outputPath}`);
-  } else {
-    process.stdout.write(markdown);
-  }
+  process.stdout.write(markdown);
 };
 
 if (require.main === module) {

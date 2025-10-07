@@ -71,7 +71,6 @@ jobs:
         uses: b-zurg/sarif-to-markdown@v1
         with:
           file-path: ${{ runner.temp }}/sarif.json
-          output-markdown: generated/report.md
           add-job-summary: true
 ```
 
@@ -80,7 +79,6 @@ jobs:
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
 | `file-path` | ✔ | – | Path to the SARIF 2.1.0 JSON file. |
-| `output-markdown` | ✖ | – | Write the Markdown report to this path (directories created as needed). |
 | `add-job-summary` | ✖ | `true` | Append the report to the GitHub Actions job summary. |
 
 ### Outputs
@@ -88,7 +86,6 @@ jobs:
 | Output | Description |
 | --- | --- |
 | `markdown` | Markdown content as a string (use in downstream workflow steps). |
-| `markdown-file` | Absolute path to the written Markdown file (only when `output-markdown` is supplied). |
 
 > 💡 Want PR comments? Pipe the `markdown` output into `gh pr comment` or another notification step that fits your workflow.
 
@@ -103,12 +100,6 @@ Run the converter directly with Node.js:
 
 ```bash
 node src/generate-report.js test-data/qodana.sarif.json
-```
-
-Provide a second argument to write to a file:
-
-```bash
-node src/generate-report.js test-data/qodana.sarif.json test-data/report.md
 ```
 
 ## Development

@@ -6,9 +6,6 @@ inputs:
   file-path:
     description: Path to the sarif file
     required: true
-  output-markdown:
-    description: Optional path where the Markdown report will be written.
-    required: false
   add-job-summary:
     description: Append the Markdown report to the GitHub Actions job summary.
     required: false
@@ -17,8 +14,6 @@ inputs:
 outputs:
   markdown:
     description: Markdown content generated from the SARIF file.
-  markdown-file:
-    description: Absolute path to the generated Markdown file when output-markdown is provided.
 
 runs:
   using: node24
