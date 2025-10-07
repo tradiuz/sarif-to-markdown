@@ -4,9 +4,9 @@ const { nodeResolve } = require("@rollup/plugin-node-resolve");
 module.exports = {
   input: "src/index.js",
   output: {
-    esModule: true,
+    exports: "auto",
     file: "dist/index.js",
-    format: "es",
+    format: "cjs",
     sourcemap: true,
   },
   plugins: [commonjs(), nodeResolve({ preferBuiltins: true })],
