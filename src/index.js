@@ -27,7 +27,8 @@ async function run() {
     const sarif = JSON.parse(sarifRaw);
     const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
     core.debug('Markdown report generated successfully.');
-
+    core.setOutput('markdown', markdown);
+    
     if (addSummary) {
       await core.summary.addRaw(markdown, true).write();
       core.debug('Markdown report appended to the job summary.');
