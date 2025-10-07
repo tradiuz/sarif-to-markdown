@@ -87,7 +87,22 @@ jobs:
 | --- | --- |
 | `markdown` | Markdown content as a string (use in downstream workflow steps). |
 
-> 💡 Want PR comments? Pipe the `markdown` output into `gh pr comment` or another notification step that fits your workflow.
+## Integration with PR comments
+
+You can use this as a starting point to add the output markdown to a comment. This uses the github cli to add or edit the last comment by the github bot user. 
+
+```yaml
+      - name: Create or update comment comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --edit-last \
+            --create-if-none \
+            --body "${{ steps.generate-sarif-md.outputs.markdown }}"
+
+```
 
 ## Compatibility
 
