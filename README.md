@@ -63,17 +63,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Qodana
-        run: |
-          qodana scan \
-            --save-report \
-            --results-dir qodana
+      - name: Generate SARIF file
+        run: ...
 
       - name: Generate Markdown report
-        uses: ./. # or buzurg/sarif-md-report@v1 once published
+        uses: b-zurg/sarif-to-markdown@v1
         with:
-          sarif-file-path: qodana/results/qodana.sarif.json
-          output-markdown: qodana/report.md
+          file-path: ${{ runner.temp }}/sarif.json
+          output-markdown: generated/report.md
           add-job-summary: true
 ```
 
