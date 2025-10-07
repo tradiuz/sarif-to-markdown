@@ -27,6 +27,7 @@ jobs:
         run: npm test
 
       - name: Generate Markdown report with local action
+        id: generate-sarif-md
         uses: ./.
         with:
           file-path: test-data/qodana.sarif.json
@@ -37,3 +38,12 @@ jobs:
         run: |
           test -f generated/report.md
           head -n 5 generated/report.md
+
+
+      - name: Create or update comment comment
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --edit-last \
+            --create-if-none \
+            --body "${{ steps.generate-sarif-md.outputs.markdown }}"
