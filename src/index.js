@@ -4,10 +4,6 @@ const core = require('@actions/core');
 const { generateMarkdownFromSarif } = require('./generate-report');
 
 function resolvePathMaybe(input) {
-  if (!input) {
-    return undefined;
-  }
-
   if (path.isAbsolute(input)) {
     return input;
   }
@@ -32,6 +28,8 @@ async function run({ coreApi = core } = {}) {
     const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
 
     coreApi.setOutput('markdown', markdown);
+    coreApi.info('Markdown report generated successfully.');
+    coreApi.info(markdown);
 
     if (addSummary) {
       await coreApi.summary.addRaw(markdown, true).write();

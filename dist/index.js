@@ -27563,10 +27563,6 @@ function requireSrc () {
 		const { generateMarkdownFromSarif } = requireGenerateReport();
 
 		function resolvePathMaybe(input) {
-		  if (!input) {
-		    return undefined;
-		  }
-
 		  if (path.isAbsolute(input)) {
 		    return input;
 		  }
@@ -27591,6 +27587,8 @@ function requireSrc () {
 		    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
 
 		    coreApi.setOutput('markdown', markdown);
+		    coreApi.info('Markdown report generated successfully.');
+		    coreApi.info(markdown);
 
 		    if (addSummary) {
 		      await coreApi.summary.addRaw(markdown, true).write();

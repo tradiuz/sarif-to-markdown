@@ -31,12 +31,13 @@ jobs:
         uses: ./.
         with:
           file-path: test-data/qodana.sarif.json
-          add-job-summary: true
+          add-job-summary: 'true'
 
       - name: Verify markdown output matches fixture
         env:
           MARKDOWN_OUTPUT: ${{ steps.generate-sarif-md.outputs.markdown }}
         run: |
+          echo $MARKDOWN_OUTPUT
           node - <<'NODE'
           const fs = require('fs');
           const expected = fs.readFileSync('test-data/expected-qodana-report.md', 'utf8').trim();
