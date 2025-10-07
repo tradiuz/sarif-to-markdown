@@ -1,16 +1,23 @@
 {
   "name": "sarif-markdown-report",
   "version": "1.0.0",
-  "description": "",
+  "description": "Github action to convert SARIF reports to markdown",
   "main": "index.js",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "build": "rollup --config rollup.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@actions/core": "^1.11.1"
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.2",
+    "rollup": "^4.52.4"
   }
 }

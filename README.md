@@ -78,7 +78,7 @@ jobs:
 
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
-| `sarif-file-path` | ✔ | – | Path to the SARIF 2.1.0 JSON file. |
+| `file-path` | ✔ | – | Path to the SARIF 2.1.0 JSON file. |
 | `output-markdown` | ✖ | – | Write the Markdown report to this path (directories created as needed). |
 | `add-job-summary` | ✖ | `true` | Append the report to the GitHub Actions job summary. |
 

@@ -3,7 +3,7 @@ description: Convert Qodana SARIF results into a readable Markdown report for CI
 author: Buzurgmehr Arjmandi
 
 inputs:
-  sarif-file-path:
+  file-path:
     description: Path to the sarif file
     required: true
   output-markdown:
