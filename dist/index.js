@@ -36,7 +36,7 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var src = {exports: {}};
+var src = {};
 
 var core = {};
 
@@ -27528,21 +27528,16 @@ function requireGenerateReport () {
 		};
 
 		const main = () => {
-		  const [, , inputPath, outputPath] = process.argv;
+		  const [, , inputPath] = process.argv;
 		  if (!inputPath) {
-		    console.error('Usage: node src/generate-report.js <input-sarif> [output-markdown]');
+		    console.error('Usage: node src/generate-report.js <input-sarif>');
 		    process.exit(1);
 		  }
 
 		  const sarif = readSarif(inputPath);
 		  const markdown = generateMarkdownFromSarif(sarif, { inputPath });
 
-		  if (outputPath) {
-		    fs.writeFileSync(outputPath, markdown, 'utf8');
-		    console.log(`Markdown report written to ${outputPath}`);
-		  } else {
-		    process.stdout.write(markdown);
-		  }
+		  process.stdout.write(markdown);
 		};
 
 		if (require.main === module) {
@@ -27559,59 +27554,50 @@ function requireGenerateReport () {
 var hasRequiredSrc;
 
 function requireSrc () {
-	if (hasRequiredSrc) return src.exports;
+	if (hasRequiredSrc) return src;
 	hasRequiredSrc = 1;
-	(function (module) {
-		const fs = require$$0$2;
-		const path = require$$1$4;
-		const core = requireCore();
-		const { generateMarkdownFromSarif } = requireGenerateReport();
+	const fs = require$$0$2;
+	const path = require$$1$4;
+	const core = requireCore();
+	const { generateMarkdownFromSarif } = requireGenerateReport();
 
-		function resolvePathMaybe(input) {
-		  if (!input) {
-		    return undefined;
-		  }
-		  return path.isAbsolute(input) ? input : path.resolve(process.cwd(), input);
-		}
+	function resolvePath(input) {
+	  if (path.isAbsolute(input)) {
+	    return input;
+	  }
 
-		async function run() {
-		  try {
-		    const sarifInput = core.getInput('file-path', { required: true });
-		    const outputPathInput = core.getInput('output-markdown');
-		    const addSummary = core.getBooleanInput('add-job-summary');
+	  const workspace = process.env.GITHUB_WORKSPACE;
+	  if (workspace && path.isAbsolute(workspace)) {
+	    return path.resolve(workspace, input);
+	  }
 
-		    const sarifPath = resolvePathMaybe(sarifInput);
-		    const outputPath = resolvePathMaybe(outputPathInput);
+	  return path.resolve(process.cwd(), input);
+	}
 
-		    const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
-		    const sarif = JSON.parse(sarifRaw);
-		    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
+	async function run() {
+	  try {
+	    const sarifInput = core.getInput('file-path', { required: true });
+	    const addSummary = core.getBooleanInput('add-job-summary');
 
-		    if (outputPath) {
-		      fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-		      fs.writeFileSync(outputPath, markdown, 'utf8');
-		      core.info(`Markdown report written to ${outputPath}`);
-		      core.setOutput('markdown-file', outputPath);
-		    }
+	    const sarifPath = resolvePath(sarifInput);
 
-		    core.setOutput('markdown', markdown);
+	    const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
+	    const sarif = JSON.parse(sarifRaw);
+	    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
+	    core.debug('Markdown report generated successfully.');
+	    core.setOutput('markdown', markdown);
+	    
+	    if (addSummary) {
+	      await core.summary.addRaw(markdown, true).write();
+	      core.debug('Markdown report appended to the job summary.');
+	    }
+	  } catch (error) {
+	    core.setFailed(error.message);
+	  }
+	}
 
-		    if (addSummary) {
-		      await core.summary.addRaw(markdown, true).write();
-		      core.info('Markdown report appended to the job summary.');
-		    }
-		  } catch (error) {
-		    core.setFailed(error.message);
-		  }
-		}
-
-		if (require.main === module) {
-		  run();
-		}
-
-		module.exports = run; 
-	} (src));
-	return src.exports;
+	run();
+	return src;
 }
 
 var srcExports = requireSrc();

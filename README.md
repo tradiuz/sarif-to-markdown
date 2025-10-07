@@ -4,7 +4,8 @@ Convert Qodana SARIF findings into a readable Markdown digest that slots neatly 
 
 ## Why This Project?
 
-- **Streamlined PR reviews** – Qodana (and other static analyzers) emit SARIF files that are great for machines, less so for humans. This action turns them into Markdown your teammates actually want to read.
+- **Qodana** - Qodana by Jetbrains is a great static analysis tool and I wanted an easy way to review its outputs in PRs - hence this project
+- **Readable Insights** – Qodana (and other static analyzers) emit SARIF files that are great for machines, less so for humans. This action turns them into Markdown your teammates actually want to read.
 - **Feature-complete tables** – Issues are grouped by category, include severity, human-readable rule descriptions, file locations, tags, and documentation links.
 - **CI-friendly** – Works as a GitHub Action and as a standalone CLI script, making it simple to slip into existing pipelines.
 
@@ -70,7 +71,6 @@ jobs:
         uses: b-zurg/sarif-to-markdown@v1
         with:
           file-path: ${{ runner.temp }}/sarif.json
-          output-markdown: generated/report.md
           add-job-summary: true
 ```
 
@@ -79,7 +79,6 @@ jobs:
 | Input | Required | Default | Description |
 | --- | --- | --- | --- |
 | `file-path` | ✔ | – | Path to the SARIF 2.1.0 JSON file. |
-| `output-markdown` | ✖ | – | Write the Markdown report to this path (directories created as needed). |
 | `add-job-summary` | ✖ | `true` | Append the report to the GitHub Actions job summary. |
 
 ### Outputs
@@ -87,9 +86,23 @@ jobs:
 | Output | Description |
 | --- | --- |
 | `markdown` | Markdown content as a string (use in downstream workflow steps). |
-| `markdown-file` | Absolute path to the written Markdown file (only when `output-markdown` is supplied). |
 
-> 💡 Want PR comments? Pipe the `markdown` output into `gh pr comment` or another notification step that fits your workflow.
+## Integration with PR comments
+
+You can use this as a starting point to add the output markdown to a comment. This uses the github cli to add or edit the last comment by the github bot user. 
+
+```yaml
+      - name: Create or update comment comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --edit-last \
+            --create-if-none \
+            --body "${{ steps.generate-sarif-md.outputs.markdown }}"
+
+```
 
 ## Compatibility
 
@@ -102,12 +115,6 @@ Run the converter directly with Node.js:
 
 ```bash
 node src/generate-report.js test-data/qodana.sarif.json
-```
-
-Provide a second argument to write to a file:
-
-```bash
-node src/generate-report.js test-data/qodana.sarif.json test-data/report.md
 ```
 
 ## Development
