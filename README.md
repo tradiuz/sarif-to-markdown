@@ -4,7 +4,8 @@ Convert Qodana SARIF findings into a readable Markdown digest that slots neatly 
 
 ## Why This Project?
 
-- **Streamlined PR reviews** – Qodana (and other static analyzers) emit SARIF files that are great for machines, less so for humans. This action turns them into Markdown your teammates actually want to read.
+- **Qodana** - Qodana by Jetbrains is a great static analysis tool and I wanted an easy way to review its outputs in PRs - hence this project
+- **Readable Insights** – Qodana (and other static analyzers) emit SARIF files that are great for machines, less so for humans. This action turns them into Markdown your teammates actually want to read.
 - **Feature-complete tables** – Issues are grouped by category, include severity, human-readable rule descriptions, file locations, tags, and documentation links.
 - **CI-friendly** – Works as a GitHub Action and as a standalone CLI script, making it simple to slip into existing pipelines.
 
