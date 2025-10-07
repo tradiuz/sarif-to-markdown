@@ -69,7 +69,7 @@ jobs:
       - name: Generate Markdown report
         uses: b-zurg/sarif-to-markdown@v1
         with:
-          sarif-file-path: ${{ runner.temp }}/sarif.json
+          file-path: ${{ runner.temp }}/sarif.json
           output-markdown: generated/report.md
           add-job-summary: true
 ```

@@ -29,7 +29,7 @@ jobs:
       - name: Generate Markdown report with local action
         uses: ./.
         with:
-          sarif-file-path: test-data/qodana.sarif.json
+          file-path: test-data/qodana.sarif.json
           output-markdown: generated/report.md
           add-job-summary: true
 
