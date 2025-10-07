@@ -27562,8 +27562,16 @@ function requireSrc () {
 	const { generateMarkdownFromSarif } = requireGenerateReport();
 
 	function resolvePath(input) {
-	  if (!input) return undefined;
-	  return path.isAbsolute(input) ? input : path.resolve(process.cwd(), input);
+	  if (path.isAbsolute(input)) {
+	    return input;
+	  }
+
+	  const workspace = process.env.GITHUB_WORKSPACE;
+	  if (workspace && path.isAbsolute(workspace)) {
+	    return path.resolve(workspace, input);
+	  }
+
+	  return path.resolve(process.cwd(), input);
 	}
 
 	async function run() {
