@@ -36,7 +36,7 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var src = {exports: {}};
+var src = {};
 
 var core = {};
 
@@ -27554,58 +27554,52 @@ function requireGenerateReport () {
 var hasRequiredSrc;
 
 function requireSrc () {
-	if (hasRequiredSrc) return src.exports;
+	if (hasRequiredSrc) return src;
 	hasRequiredSrc = 1;
-	(function (module) {
-		const fs = require$$0$2;
-		const path = require$$1$4;
-		const core = requireCore();
-		const { generateMarkdownFromSarif } = requireGenerateReport();
+	const fs = require$$0$2;
+	const path = require$$1$4;
+	const core = requireCore();
+	const { generateMarkdownFromSarif } = requireGenerateReport();
 
-		function resolvePathMaybe(input) {
-		  if (path.isAbsolute(input)) {
-		    return input;
-		  }
+	function resolvePathMaybe(input) {
+	  if (path.isAbsolute(input)) {
+	    return input;
+	  }
 
-		  const workspace = process.env.GITHUB_WORKSPACE;
-		  if (workspace && path.isAbsolute(workspace)) {
-		    return path.resolve(workspace, input);
-		  }
+	  const workspace = process.env.GITHUB_WORKSPACE;
+	  if (workspace && path.isAbsolute(workspace)) {
+	    return path.resolve(workspace, input);
+	  }
 
-		  return path.resolve(process.cwd(), input);
-		}
+	  return path.resolve(process.cwd(), input);
+	}
 
-		async function run({ coreApi = core } = {}) {
-		  try {
-		    const sarifInput = coreApi.getInput('file-path', { required: true });
-		    const addSummary = coreApi.getBooleanInput('add-job-summary');
+	async function run({ coreApi = core } = {}) {
+	  try {
+	    const sarifInput = coreApi.getInput('file-path', { required: true });
+	    const addSummary = coreApi.getBooleanInput('add-job-summary');
 
-		    const sarifPath = resolvePathMaybe(sarifInput);
+	    const sarifPath = resolvePathMaybe(sarifInput);
+	    coreApi.debug({sarifPath, sarifInput, addSummary});
 
-		    const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
-		    const sarif = JSON.parse(sarifRaw);
-		    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
+	    const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
+	    const sarif = JSON.parse(sarifRaw);
+	    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
 
-		    coreApi.setOutput('markdown', markdown);
-		    coreApi.info('Markdown report generated successfully.');
-		    coreApi.info(markdown);
+	    coreApi.setOutput('markdown', markdown);
+	    coreApi.debug('Markdown report generated successfully.');
+	    coreApi.debug(markdown);
+	    if (addSummary) {
+	      await coreApi.summary.addRaw(markdown, true).write();
+	      coreApi.debug('Markdown report appended to the job summary.');
+	    }
+	  } catch (error) {
+	    coreApi.setFailed(error.message);
+	  }
+	}
 
-		    if (addSummary) {
-		      await coreApi.summary.addRaw(markdown, true).write();
-		      coreApi.info('Markdown report appended to the job summary.');
-		    }
-		  } catch (error) {
-		    coreApi.setFailed(error.message);
-		  }
-		}
-
-		if (require.main === module) {
-		  run();
-		}
-
-		module.exports = run; 
-	} (src));
-	return src.exports;
+	run();
+	return src;
 }
 
 var srcExports = requireSrc();

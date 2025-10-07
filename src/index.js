@@ -28,8 +28,8 @@ async function run({ coreApi = core } = {}) {
     const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
 
     coreApi.setOutput('markdown', markdown);
-    coreApi.info('Markdown report generated successfully.');
-    coreApi.info(markdown);
+    coreApi.debug('Markdown report generated successfully.');
+    coreApi.debug(markdown);
 
     if (addSummary) {
       await coreApi.summary.addRaw(markdown, true).write();
@@ -40,8 +40,4 @@ async function run({ coreApi = core } = {}) {
   }
 }
 
-if (require.main === module) {
-  run();
-}
-
-module.exports = run;
+run()
