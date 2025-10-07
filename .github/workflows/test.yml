@@ -39,7 +39,6 @@ jobs:
         env:
           MARKDOWN_OUTPUT: ${{ steps.generate-sarif-md.outputs.markdown }}
         run: |
-          echo $MARKDOWN_OUTPUT
           node - <<'NODE'
           const fs = require('fs');
           const expected = fs.readFileSync('test-data/expected-qodana-report.md', 'utf8').trim();
