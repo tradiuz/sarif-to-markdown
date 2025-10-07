@@ -22,6 +22,7 @@ async function run({ coreApi = core } = {}) {
     const addSummary = coreApi.getBooleanInput('add-job-summary');
 
     const sarifPath = resolvePathMaybe(sarifInput);
+    coreApi.debug({sarifPath, sarifInput, addSummary});
 
     const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
     const sarif = JSON.parse(sarifRaw);
@@ -30,10 +31,9 @@ async function run({ coreApi = core } = {}) {
     coreApi.setOutput('markdown', markdown);
     coreApi.debug('Markdown report generated successfully.');
     coreApi.debug(markdown);
-
     if (addSummary) {
       await coreApi.summary.addRaw(markdown, true).write();
-      coreApi.info('Markdown report appended to the job summary.');
+      coreApi.debug('Markdown report appended to the job summary.');
     }
   } catch (error) {
     coreApi.setFailed(error.message);
