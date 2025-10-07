@@ -27561,40 +27561,29 @@ function requireSrc () {
 	const core = requireCore();
 	const { generateMarkdownFromSarif } = requireGenerateReport();
 
-	function resolvePathMaybe(input) {
-	  if (path.isAbsolute(input)) {
-	    return input;
-	  }
-
-	  const workspace = process.env.GITHUB_WORKSPACE;
-	  if (workspace && path.isAbsolute(workspace)) {
-	    return path.resolve(workspace, input);
-	  }
-
-	  return path.resolve(process.cwd(), input);
+	function resolvePath(input) {
+	  if (!input) return undefined;
+	  return path.isAbsolute(input) ? input : path.resolve(process.cwd(), input);
 	}
 
-	async function run({ coreApi = core } = {}) {
+	async function run() {
 	  try {
-	    const sarifInput = coreApi.getInput('file-path', { required: true });
-	    const addSummary = coreApi.getBooleanInput('add-job-summary');
+	    const sarifInput = core.getInput('file-path', { required: true });
+	    const addSummary = core.getBooleanInput('add-job-summary');
 
-	    const sarifPath = resolvePathMaybe(sarifInput);
-	    coreApi.debug({sarifPath, sarifInput, addSummary});
+	    const sarifPath = resolvePath(sarifInput);
 
 	    const sarifRaw = fs.readFileSync(sarifPath, 'utf8');
 	    const sarif = JSON.parse(sarifRaw);
 	    const markdown = generateMarkdownFromSarif(sarif, { inputPath: sarifPath });
+	    core.debug('Markdown report generated successfully.');
 
-	    coreApi.setOutput('markdown', markdown);
-	    coreApi.debug('Markdown report generated successfully.');
-	    coreApi.debug(markdown);
 	    if (addSummary) {
-	      await coreApi.summary.addRaw(markdown, true).write();
-	      coreApi.debug('Markdown report appended to the job summary.');
+	      await core.summary.addRaw(markdown, true).write();
+	      core.debug('Markdown report appended to the job summary.');
 	    }
 	  } catch (error) {
-	    coreApi.setFailed(error.message);
+	    core.setFailed(error.message);
 	  }
 	}
 
