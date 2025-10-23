@@ -27346,8 +27346,8 @@ function requireGenerateReport () {
 		  return String(text)
 		    .replace(/\r?\n/g, '<br>')
 		    .replace(/\|/g, '\\|')
-		    .replace(/</g, '&lt;')
-		    .replace(/>/g, '&gt;');
+		    .replace(/(?!<\s*br\s*\/*\s*>)(<)/gi, '&lt;')
+		    .replace(/(>)(?<!<\s*br\s*\/*\s*>)/gi, '&gt;');
 		};
 
 		const humanizeCategoryId = (categoryId) => {
